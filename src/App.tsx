@@ -13,6 +13,7 @@ import UpgradePanel from './components/UpgradePanel'
 import SellPanel from './components/SellPanel'
 import Notifications from './components/Notifications'
 import LoadingScreen from './components/LoadingScreen'
+import SceneErrorBoundary from './components/SceneErrorBoundary'
 import ContextualHints from './components/ContextualHints'
 import TourController from './components/TourController'
 import ViewpointSelector from './components/ViewpointSelector'
@@ -88,6 +89,7 @@ export default function App() {
       <AnimatePresence>{booting && <LoadingScreen />}</AnimatePresence>
 
       <Suspense fallback={<LoadingScreen />}>
+        <SceneErrorBoundary>
         <div className="absolute inset-0">
           {scene === 'farm' && (
             <FarmScene
@@ -114,6 +116,7 @@ export default function App() {
             />
           )}
         </div>
+        </SceneErrorBoundary>
       </Suspense>
 
       <UIOverlay>
