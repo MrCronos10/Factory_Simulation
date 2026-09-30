@@ -63,6 +63,17 @@ dispatch player actions. Never put game calculations inside 3D mesh components.
   variant-dispatched via `StationVisual`; hover/click/glow handled by `StationHost`.
 - Repeated geometry (cows, pigs, trees, fences, pallets) uses `InstancedMesh`.
 
+### GLB models (`src/scenes/models/`)
+- Drop GLB files into `src/assets/models/` (`cow`, `barn`, `tractor`, `fermenter`,
+  `granulator`, `bagging_machine`). They are **visual only** — simulation is untouched.
+- `modelRegistry.ts` discovers files via `import.meta.glob`, so the app builds and
+  runs whether or not the files exist. `getModelUrl(name)` returns null when absent.
+- `GLBModel.tsx` loads by name with Suspense (`<Html>` "Loading model…"), auto-fits
+  scale to a target height (GLBs vary in units), enables shadows, and clones the scene
+  for reuse. If the file is missing or fails to load, it renders the `fallback`
+  primitive instead of crashing. Interactions (hover/click/labels) live on the
+  surrounding group, so they work with either model or primitive.
+
 ### `src/components/` — 2D overlay (all pointer-events aware)
 - `UIOverlay` — transparent `pointer-events-none` layer; children opt into `pointer-events-auto`.
 - `TopNavigation` (animated underline, tour/day-night/sound/language/save, mobile collapse),

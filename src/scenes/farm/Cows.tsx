@@ -1,17 +1,57 @@
 import { useMemo, useRef, useState } from 'react'
 import { Object3D, Color, InstancedMesh } from 'three'
 import { Html } from '@react-three/drei'
+import GLBModel from '../models/GLBModel'
+import { getModelUrl } from '../models/modelRegistry'
 
 type Props = { positions: Array<[number, number]> }
 
 const BODY_COLOR = '#f2f2f2'
 const HOVER_COLOR = '#ffd97a'
 
+/** GLB herd: one cow.glb clone per position with a group hover label. */
+function GLBCows({ positions }: Props) {
+  const [hoverPos, setHoverPos] = useState<[number, number] | null>(null)
+  return (
+    <group onPointerOut={() => setHoverPos(null)}>
+      {positions.map(([x, z], i) => {
+        const rot = ((x * 12.9898 + z * 78.233) % 1) * Math.PI * 2
+        return (
+          <group
+            key={i}
+            onPointerOver={(e) => { e.stopPropagation(); setHoverPos([x, z]) }}
+          >
+            <GLBModel
+              name="cow"
+              position={[x, 0, z]}
+              rotation={[0, rot, 0]}
+              fitHeight={1.4}
+              fallback={null}
+            />
+          </group>
+        )
+      })}
+      {hoverPos && (
+        <Html position={[hoverPos[0], 2, hoverPos[1]]} center distanceFactor={10}>
+          <div className="px-2 py-1 rounded bg-black/70 text-white text-[10px] border border-white/10">
+            Dairy Cow
+          </div>
+        </Html>
+      )}
+    </group>
+  )
+}
+
 /**
- * Herd of cows rendered as two InstancedMeshes (body + head).
- * Individual instance highlight on hover via per-instance color.
+ * Herd of cows. Uses cow.glb clones when the model exists, otherwise two
+ * InstancedMeshes (body + head) with per-instance hover highlight.
  */
 export default function Cows({ positions }: Props) {
+  if (getModelUrl('cow')) return <GLBCows positions={positions} />
+  return <InstancedCows positions={positions} />
+}
+
+function InstancedCows({ positions }: Props) {
   const bodyRef = useRef<InstancedMesh>(null)
   const headRef = useRef<InstancedMesh>(null)
   const [hoverIdx, setHoverIdx] = useState<number | null>(null)

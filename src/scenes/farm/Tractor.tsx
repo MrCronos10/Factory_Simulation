@@ -2,6 +2,7 @@ import { useMemo } from 'react'
 import { Html } from '@react-three/drei'
 import type { TractorState } from '../../game/gameTypes'
 import { LAYOUT } from './farmLayout'
+import GLBModel from '../models/GLBModel'
 
 type Props = { tractor: TractorState }
 
@@ -52,8 +53,8 @@ export default function Tractor({ tractor }: Props) {
     ? '#6a4622'
     : '#3a2a20'
 
-  return (
-    <group position={[pos[0], 0, pos[1]]} rotation={[0, -angle, 0]}>
+  const chassis = (
+    <group>
       {/* cab */}
       <mesh position={[0.5, 0.9, 0]} castShadow>
         <boxGeometry args={[1, 1.1, 1.2]} />
@@ -69,13 +70,6 @@ export default function Tractor({ tractor }: Props) {
         <boxGeometry args={[1.6, 0.3, 1.2]} />
         <meshStandardMaterial color="#5a5a5a" />
       </mesh>
-      {/* load */}
-      {loadRatio > 0 && (
-        <mesh position={[-1.1, 0.85, 0]} castShadow>
-          <boxGeometry args={[1.4, 0.1 + loadRatio * 0.5, 1.0]} />
-          <meshStandardMaterial color={bedColor} />
-        </mesh>
-      )}
       {/* wheels */}
       {[[1.4, 0.8], [1.4, -0.8], [-1.1, 0.8], [-1.1, -0.8]].map(([x, z], i) => (
         <mesh key={i} position={[x, 0.35, z]} rotation={[Math.PI / 2, 0, 0]} castShadow>
@@ -83,6 +77,21 @@ export default function Tractor({ tractor }: Props) {
           <meshStandardMaterial color="#1a1a1a" />
         </mesh>
       ))}
+    </group>
+  )
+
+  return (
+    <group position={[pos[0], 0, pos[1]]} rotation={[0, -angle, 0]}>
+      {/* Static chassis: GLB when available, else primitive. */}
+      <GLBModel name="tractor" fitHeight={2} rotation={[0, Math.PI / 2, 0]} fallback={chassis} />
+
+      {/* State-driven load pile (kept as primitive, sits on the trailer bed). */}
+      {loadRatio > 0 && (
+        <mesh position={[-1.1, 0.85, 0]} castShadow>
+          <boxGeometry args={[1.4, 0.1 + loadRatio * 0.5, 1.0]} />
+          <meshStandardMaterial color={bedColor} />
+        </mesh>
+      )}
 
       {tractor.phase !== 'idle' && (
         <Html position={[0, 2.4, 0]} center distanceFactor={10}>

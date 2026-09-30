@@ -29,6 +29,10 @@ import { TRACTOR_FUEL_PER_TRIP } from './game/constants'
 import type { ViewpointKey } from './scenes/cameraViewpoints'
 import { audioManager } from './audio/AudioManager'
 import { translate } from './data/i18n'
+import { preloadModels } from './scenes/models/modelRegistry'
+
+// Preload available GLB models once (no-op for files that aren't present).
+preloadModels(['cow', 'barn', 'tractor', 'fermenter', 'granulator', 'bagging_machine'])
 
 export default function App() {
   const { scene, goTo } = useSceneNavigation()

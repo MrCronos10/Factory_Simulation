@@ -67,10 +67,10 @@ export default function FarmScene({ state, onManureClick, onGateClick, viewpoint
 
       <Suspense fallback={null}>
         <FarmGround />
-        <Barn position={LAYOUT.cowBarn.pos}     size={LAYOUT.cowBarn.size}     color="#a1442d" label="Cow Barn" />
-        <Barn position={LAYOUT.pigShelter.pos}  size={LAYOUT.pigShelter.size}  color="#b56a3a" label="Pig Shelter" />
+        <Barn position={LAYOUT.cowBarn.pos}     size={LAYOUT.cowBarn.size}     color="#a1442d" label="Cow Barn" useModel />
+        <Barn position={LAYOUT.pigShelter.pos}  size={LAYOUT.pigShelter.size}  color="#b56a3a" label="Pig Shelter" useModel />
         <Barn position={LAYOUT.chickenCoop.pos} size={LAYOUT.chickenCoop.size} color="#d9a04a" label="Chicken Coop" />
-        <Barn position={LAYOUT.storageBarn.pos} size={LAYOUT.storageBarn.size} color="#8a5a3a" label="Storage Barn" />
+        <Barn position={LAYOUT.storageBarn.pos} size={LAYOUT.storageBarn.size} color="#8a5a3a" label="Storage Barn" useModel />
         <Barn position={LAYOUT.tractorShed.pos} size={LAYOUT.tractorShed.size} color="#5a5a5a" label="Tractor Shed" />
 
         <Fences />
